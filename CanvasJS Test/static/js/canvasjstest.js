@@ -1,42 +1,75 @@
-window.onload = function () {
-
-    function buildCharts(sample) {
-
-    // @TODO: Use `d3.json` to fetch the sample data for the plots
-    var URL = `/samples/${sample}`;
+    var URL = `/samples/AZ`;
     console.log(URL);
       
     d3.json(URL).then(function(data) {
     console.log(data);
     console.log(data[2].PosSide);
+
     totalsal = 0
     offsal = 0
     defsal = 0
     stsal = 0
+    deadsal = 0
+    datapointsoff = [];
+    datapointsdef = [];
+    datapointsst = [];
+    datapointsdead = [];
+    ocount = 0;
+    dcount = 0;
+    scount = 0;
+    pcount = 0;
+    onames = [];
+    dnames = [];
+    snames = [];
+    deadnames = [];
+
 
     for (i = 0; i < data.length; i++) {  //loop through the array
         totalsal += parseInt(data[i].CapHit);  //Do the math!
-        if (data[i].PosSide === "Offense") {
+        if (data[i].Status == "Practice") {
+            pcount += 1;
+        }
+        else if (data[i].Status === "IR"  || data[i].Status === "Dead") {
+            deadsal += parseInt(data[i].CapHit);
+           
+            deadnames.push(data[i].PlayerName);
+            datapointsdead.push({label: data[i].PlayerName, y:parseInt(data[i].CapHit)});
+        }
+        else if (data[i].PosSide === "Offense") {
             offsal += parseInt(data[i].CapHit);
+            ocount += 1;
+            onames.push(data[i].PlayerName);
+            datapointsoff.push({label: data[i].PlayerName, y:parseInt(data[i].CapHit)});
+            // console.log(data[i].PlayerName, data[i].CapHit, data[i].Pos);
         } else if (data[i].PosSide === "Defense") {
             defsal += parseInt(data[i].CapHit);
-            console.log("hit def");
+            dcount += 1;
+            onames.push(data[i].PlayerName);
+            datapointsdef.push({label: data[i].PlayerName, y:parseInt(data[i].CapHit)});
+            // console.log(data[i].PlayerName, data[i].CapHit, data[i].Pos);
         } else if (data[i].PosSide === "Special Teams") {
             stsal += parseInt(data[i].CapHit);
-            console.log("hit ST");
+            scount += 1;
+            snames.push(data[i].PlayerName);
+            datapointsst.push({label: data[i].PlayerName, y:parseInt(data[i].CapHit)});
+            // console.log(data[i].PlayerName, data[i].CapHit, data[i].Pos);
         } else {console.log("nah")}
     };
-    console.log(totalsal); 
-    console.log(offsal); 
-    console.log(defsal); 
-    console.log(stsal); 
-    });  
-    };
-    buildCharts("AZ");
+    // console.log(totalsal); 
+    // console.log(offsal); 
+    // console.log(defsal); 
+    // console.log(stsal);
+    console.log(datapointsoff);
+    console.log(datapointsdef);
+    console.log(datapointsst);
+    console.log(datapointsdead);
 
-    
 
-    var totalVisitors = 883000;
+
+    // @TODO: Use `d3.json` to fetch the sample data for the plots
+
+    var totalVisitors = totalsal;
+    console.log(totalVisitors);
     var visitorsData = {
         "New vs Returning Visitors": [{
             click: visitorsChartDrilldownHandler,
@@ -44,57 +77,48 @@ window.onload = function () {
             explodeOnClick: false,
             innerRadius: "75%",
             legendMarkerType: "square",
-            name: "New vs Returning Visitors",
+            name: "Offense vs Defense vs Sp Teams spending",
             radius: "100%",
             showInLegend: true,
             startAngle: 90,
             type: "doughnut",
             dataPoints: [
-                { y: 519960, name: "New Visitors", color: "#E7823A" },
-                { y: 363040, name: "Returning Visitors", color: "#546BC1" }
+                { y: offsal, name: "Offense", color: "#E7823A" },
+                { y: defsal, name: "Defense", color: "#546BC1" },
+                { y: stsal, name: "Sp. Teams", color: "#548BC1" },
+                { y: deadsal, name: "IR/Dead Cap", color: "#A482C1" },
             ]
         }],
-        "New Visitors": [{
+        "Offense": [{
             color: "#E7823A",
-            name: "New Visitors",
+            name: "Offense",
             type: "column",
-            xValueFormatString: "MMM YYYY",
-            dataPoints: [
-                { x: new Date("1 Jan 2015"), y: 33000 },
-                { x: new Date("1 Feb 2015"), y: 35960 },
-                { x: new Date("1 Mar 2015"), y: 42160 },
-                { x: new Date("1 Apr 2015"), y: 42240 },
-                { x: new Date("1 May 2015"), y: 43200 },
-                { x: new Date("1 Jun 2015"), y: 40600 },
-                { x: new Date("1 Jul 2015"), y: 42560 },
-                { x: new Date("1 Aug 2015"), y: 44280 },
-                { x: new Date("1 Sep 2015"), y: 44800 },
-                { x: new Date("1 Oct 2015"), y: 48720 },
-                { x: new Date("1 Nov 2015"), y: 50840 },
-                { x: new Date("1 Dec 2015"), y: 51600 }
-            ]
+            dataPoints: datapointsoff
         }],
-        "Returning Visitors": [{
-            color: "#546BC1",
-            name: "Returning Visitors",
+        "Defense": [{
+            color: "#E7823A",
+            name: "Defense",
             type: "column",
             xValueFormatString: "MMM YYYY",
-            dataPoints: [
-                { x: new Date("1 Jan 2015"), y: 22000 },
-                { x: new Date("1 Feb 2015"), y: 26040 },
-                { x: new Date("1 Mar 2015"), y: 25840 },
-                { x: new Date("1 Apr 2015"), y: 23760 },
-                { x: new Date("1 May 2015"), y: 28800 },
-                { x: new Date("1 Jun 2015"), y: 29400 },
-                { x: new Date("1 Jul 2015"), y: 33440 },
-                { x: new Date("1 Aug 2015"), y: 37720 },
-                { x: new Date("1 Sep 2015"), y: 35200 },
-                { x: new Date("1 Oct 2015"), y: 35280 },
-                { x: new Date("1 Nov 2015"), y: 31160 },
-                { x: new Date("1 Dec 2015"), y: 34400 }
-            ]
+            dataPoints: datapointsdef
+        }],
+        "Sp. Teams": [{
+            color: "#546BC1",
+            name: "Sp. Teams",
+            type: "column",
+            xValueFormatString: "MMM YYYY",
+            dataPoints: datapointsst
+        }],
+        "IR/Dead Cap": [{
+            color: "#546BC1",
+            name: "Sp. Teams",
+            type: "column",
+            xValueFormatString: "MMM YYYY",
+            dataPoints: datapointsdead
         }]
     };
+
+    console.log(visitorsData["Offense"][0]["dataPoints"]);
     
     var newVSReturningVisitorsOptions = {
         animationEnabled: true,
@@ -118,6 +142,7 @@ window.onload = function () {
         },
         data: []
     };
+        
     
     var visitorsDrilldownedChartOptions = {
         animationEnabled: true,
@@ -144,7 +169,7 @@ window.onload = function () {
     function visitorsChartDrilldownHandler(e) {
         e.chart.options = visitorsDrilldownedChartOptions;
         e.chart.options.data = visitorsData[e.dataPoint.name];
-        e.chart.options.title = { text: e.dataPoint.name }
+        e.chart.options.title = { text: e.dataPoint.name };
         e.chart.render();
         console.log(visitorsDrilldownedChartOptions);
         console.log(e.chart.options.data);
@@ -157,8 +182,8 @@ window.onload = function () {
         newVSReturningVisitorsOptions.data = visitorsData["New vs Returning Visitors"];
         $("#chartContainer").CanvasJSChart(newVSReturningVisitorsOptions);
     });
+});  
     
-    }
 
 
 
