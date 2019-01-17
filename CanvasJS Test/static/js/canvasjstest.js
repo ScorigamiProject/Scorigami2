@@ -1,70 +1,148 @@
-    var URL = `/samples/AZ`;
+function buildChart(sample, type) {
+
+    var typeselector = d3.select("#selDataset2").attr('value');
+    console.log(typeselector);
+    
+    var URL = `/samples/${sample}`;
+    var Charttype = type;
+    //"Category Level" // "Player Level"
     console.log(URL);
+    console.log(Charttype);
       
+
     d3.json(URL).then(function(data) {
+
+    function numberfy(curr) {
+        return parseInt(curr.replace(/[^0-9.-]+/g,""))
+    };
+
     console.log(data);
     console.log(data[2].PosSide);
+    console.log(numberfy(data[2].CapHit));
 
+    // salaries
     totalsal = 0
     offsal = 0
     defsal = 0
     stsal = 0
-    deadsal = 0
-    datapointsoff = [];
-    datapointsdef = [];
-    datapointsst = [];
-    datapointsdead = [];
+    
+
+
+    // datapoints used for graphs
+    playersoff = [];
+    playersdef = [];
+    playersst = [];
+    
+
+    // counts for ids, not needed
     ocount = 0;
     dcount = 0;
     scount = 0;
     pcount = 0;
+
+    // names
     onames = [];
     dnames = [];
     snames = [];
-    deadnames = [];
+    
 
+    oposcat = [];
+    dposcat = [];
+    sposcat = [];
+    
 
+    // salaries by player and category extraction
     for (i = 0; i < data.length; i++) {  //loop through the array
-        totalsal += parseInt(data[i].CapHit);  //Do the math!
-        if (data[i].Status == "Practice") {
-            pcount += 1;
-        }
-        else if (data[i].Status === "IR"  || data[i].Status === "Dead") {
-            deadsal += parseInt(data[i].CapHit);
-           
-            deadnames.push(data[i].PlayerName);
-            datapointsdead.push({label: data[i].PlayerName, y:parseInt(data[i].CapHit)});
-        }
-        else if (data[i].PosSide === "Offense") {
-            offsal += parseInt(data[i].CapHit);
+        if (data[i].CapHit === "-") {
+            var nnn = 1
+        } else if (data[i].PosSide === "Offense") {
+            offsal += numberfy(data[i].CapHit);
             ocount += 1;
-            onames.push(data[i].PlayerName);
-            datapointsoff.push({label: data[i].PlayerName, y:parseInt(data[i].CapHit)});
+            oposcat.push({category: data[i].PosCategory, salary: numberfy(data[i].CapHit)});
+            onames.push(data[i].ActivePlayers);
+            playersoff.push({label: data[i].ActivePlayers, y:numberfy(data[i].CapHit)});
+            totalsal += numberfy(data[i].CapHit);  //Do the math!
             // console.log(data[i].PlayerName, data[i].CapHit, data[i].Pos);
         } else if (data[i].PosSide === "Defense") {
-            defsal += parseInt(data[i].CapHit);
+            defsal += numberfy(data[i].CapHit);
             dcount += 1;
-            onames.push(data[i].PlayerName);
-            datapointsdef.push({label: data[i].PlayerName, y:parseInt(data[i].CapHit)});
+            dposcat.push({category: data[i].PosCategory, salary: numberfy(data[i].CapHit)});
+            dnames.push(data[i].ActivePlayers);
+            playersdef.push({label: data[i].ActivePlayers, y:numberfy(data[i].CapHit)});
+            totalsal += numberfy(data[i].CapHit);  //Do the math!
             // console.log(data[i].PlayerName, data[i].CapHit, data[i].Pos);
         } else if (data[i].PosSide === "Special Teams") {
-            stsal += parseInt(data[i].CapHit);
+            stsal += numberfy(data[i].CapHit);
             scount += 1;
-            snames.push(data[i].PlayerName);
-            datapointsst.push({label: data[i].PlayerName, y:parseInt(data[i].CapHit)});
+            sposcat.push({category: data[i].PosCategory, salary: numberfy(data[i].CapHit)});
+            snames.push(data[i].ActivePlayers);
+            playersst.push({label: data[i].ActivePlayers, y:numberfy(data[i].CapHit)});
+            totalsal += numberfy(data[i].CapHit);  //Do the math!
             // console.log(data[i].PlayerName, data[i].CapHit, data[i].Pos);
         } else {console.log("nah")}
     };
-    // console.log(totalsal); 
-    // console.log(offsal); 
-    // console.log(defsal); 
-    // console.log(stsal);
-    console.log(datapointsoff);
-    console.log(datapointsdef);
-    console.log(datapointsst);
-    console.log(datapointsdead);
+
+    function groupBy(data) {
+        var distinct = [];
+        for (var i = 0; i < data.length; i++) {
+            // console.log(distinct);
+            if (distinct.includes(data[i].category) == true) {
+                // console.log("current cat not detected in distinct");
+            } else {
+                distinct.push(data[i].category)
+            }
+        
+        };
+        var salaries = []
+        for (var i = 0; i < distinct.length; i++) {
+            salaries.push(0)
+        }
+        for (var i = 0; i < data.length; i++) {
+            for (var j = 0; j < distinct.length; j++) {
+                if (data[i].category === distinct[j]) {
+                    salaries[j] += parseInt(data[i].salary);
+                };
+        
+            };
+        };
+        finalbigmemes = []
+        for (var j = 0; j < distinct.length; j++) {
+            finalbigmemes.push({label: distinct[j], y: salaries[j]});
+        }
+        return finalbigmemes;
+    }
+
+    console.log(groupBy(oposcat));
+    
+    console.log(totalsal); 
+    console.log(offsal); 
+    console.log(defsal); 
+    console.log(stsal);
+    // console.log(datapointsoff);
+    // console.log(datapointsdef);
+    // console.log(datapointsst);
+    // console.log(datapointsdead);
+
+    console.log(dposcat);
+    console.log(oposcat);
+    console.log(sposcat);
+
+    groupeddef = groupBy(dposcat);
+    groupedoff = groupBy(oposcat);
+    groupedst = groupBy(sposcat);
 
 
+    console.log(groupeddef);
+    console.log(Charttype);
+    if (Charttype === "Category Level") {
+        datapointsoff = groupedoff;
+        datapointsdef = groupeddef;
+        datapointsst = groupedst;
+    } else if (Charttype === "Player Level") {
+        datapointsoff = playersoff;
+        datapointsdef = playersdef;
+        datapointsst = playersst;
+    }
 
     // @TODO: Use `d3.json` to fetch the sample data for the plots
 
@@ -85,10 +163,12 @@
             dataPoints: [
                 { y: offsal, name: "Offense", color: "#E7823A" },
                 { y: defsal, name: "Defense", color: "#546BC1" },
-                { y: stsal, name: "Sp. Teams", color: "#548BC1" },
-                { y: deadsal, name: "IR/Dead Cap", color: "#A482C1" },
+                { y: stsal, name: "Sp. Teams", color: "#548BC1" }
             ]
         }],
+
+        
+
         "Offense": [{
             color: "#E7823A",
             name: "Offense",
@@ -109,13 +189,6 @@
             xValueFormatString: "MMM YYYY",
             dataPoints: datapointsst
         }],
-        "IR/Dead Cap": [{
-            color: "#546BC1",
-            name: "Sp. Teams",
-            type: "column",
-            xValueFormatString: "MMM YYYY",
-            dataPoints: datapointsdead
-        }]
     };
 
     console.log(visitorsData["Offense"][0]["dataPoints"]);
@@ -174,44 +247,43 @@
         console.log(visitorsDrilldownedChartOptions);
         console.log(e.chart.options.data);
         console.log(e.chart.options.title);
-        $("#backButton").toggleClass("invisible");
+        
     }
     
     $("#backButton").click(function() { 
-        $(this).toggleClass("invisible");
         newVSReturningVisitorsOptions.data = visitorsData["New vs Returning Visitors"];
         $("#chartContainer").CanvasJSChart(newVSReturningVisitorsOptions);
     });
 });  
+};
     
 
 
 
-    // function init() {
-    //     // Grab a reference to the dropdown select element
-    //     var selector = d3.select("#selDataset");
+     function init() {
+        // Grab a reference to the dropdown select element
+        var selector = d3.select("#selDataset2");
+              
+          buildChart("AZ","Player Level");
+
+        };
       
-    //     // Use the list of sample names to populate the select options
-    //     d3.json("/names").then((sampleNames) => {
-    //       sampleNames.forEach((sample) => {
-    //         selector
-    //           .append("option")
-    //           .text(sample)
-    //           .property("value", sample);
-    //       });
+        var sampleselector = "AZ"
+        var typeselector = "Player Level"
       
-    //       // Use the first sample from the list to build the initial plots
-    //       const firstSample = sampleNames[0];
-    //       buildCharts(firstSample);
-    //       buildMetadata(firstSample);
-    //     });
-    //   }
+      function optionChanged1(newSample) {
+        sampleselector = newSample;
+      };
+      function optionChanged2(newType) {
+        // Fetch new data each time a new sample is selected
+        typeselector = newType;
+      };
+
+      function handleChange() {
+            
+        buildChart(sampleselector, typeselector);
+      };
+     
       
-    //   function optionChanged(newSample) {
-    //     // Fetch new data each time a new sample is selected
-    //     buildCharts(newSample);
-    //     buildMetadata(newSample);
-    //   }
-      
-    //   // Initialize the dashboard
-    //   init();
+      // Initialize thedashboard
+      init();

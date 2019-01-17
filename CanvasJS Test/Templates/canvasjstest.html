@@ -4,41 +4,49 @@
 
     <div class="well">
         <h5>SELECT Team:</h5>
-            <select id="selDataset" onchange="optionChanged(this.value)">
+            <select id="selDataset1" onchange="optionChanged1(this.value); handleChange();">
 				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
-				<option value="AZ">AZ</option>
+				<option value="ATL">ATL</option>
+				<option value="BAL">BAL</option>
+				<option value="BUF">BUF</option>
+				<option value="CAR">CAR</option>
+				<option value="CHI">CHI</option>
+				<option value="CIN">CIN</option>
+				<option value="CLE">CLE</option>
+				<option value="DAL">DAL</option>
+				<option value="DEN">DEN</option>
+				<option value="DET">DET</option>
+				<option value="GB">GB</option>
+				<option value="HOU">HOU</option>
+				<option value="IND">IND</option>
+				<option value="JAX">JAX</option>
+				<option value="KC">KC</option>
+				<option value="LAC">LAC</option>
+				<option value="LAR">LAR</option>
+				<option value="MIA">MIA</option>
+				<option value="MIN">MIN</option>
+				<option value="NE">NE</option>
+				<option value="NO">NO</option>
+				<option value="NYG">NYG</option>
+				<option value="NYJ">NYJ</option>
+				<option value="OAK">OAK</option>
+				<option value="PHI">PHI</option>
+				<option value="PIT">PIT</option>
+				<option value="SF">SF</option>
+				<option value="SEA">SEA</option>
+				<option value="TB">TB</option>
+				<option value="TEN">TEN</option>
+				<option value="WAS">WAS</option>
 			</select>
-        </div>
+		</div>
+		
+		<div class="well">
+			<h5>SELECT Chart Type:</h5>
+				<select id="selDataset2" onchange="optionChanged2(this.value); handleChange();">
+					<option value="Player Level">Player Level</option>
+					<option value="Category Level">Category Level</option>
+				</select>
+			</div>
 
 <style>
 	#backButton {
@@ -53,15 +61,17 @@
 		right: 10px;
 		cursor: pointer;
 	}
-	.invisible {
-		display: none;
-	}
 </style>
 </head>
 <body>
 
+
+
 <div id="chartContainer" style="height: 300px; width: 100%;"></div>
 <button class="btn invisible" id="backButton">< Back</button>
+
+<a href="http://localhost:8700/divisions">Division Analysis</a>
+
 <!-- <script type="text/javascript" src="canvasjstest.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
 <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>

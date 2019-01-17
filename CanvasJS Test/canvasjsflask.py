@@ -16,6 +16,8 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 
 
+
+
 # #################################################
 # # Database Setup
 # #################################################
@@ -98,12 +100,17 @@ def samples(sample):
     #     "otu_labels": sorted_data.otu_label.tolist(),
     # }
     # return jsonify(data)
-    with open('NFLSalaryCap.json') as data_file:    
+    print(sample)
+    with open('NFLSalaryCap2.json') as data_file:    
         data = json.load(data_file)
-        print(data)
-        seldata = [x for x in data if x['Team'] == sample]
+        seldata = [x for x in data if x['TeamCode'] == sample]
+        # pprint(seldata)
         return jsonify(seldata)
 
+@app.route("/divisions")
+def divisions():
+    """Return the homepage."""
+    return render_template("divisions.html")
 
 
 if __name__ == "__main__":
