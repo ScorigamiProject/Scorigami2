@@ -149,10 +149,11 @@ function buildChart(sample, type) {
     {category: "Passing", total: 48542438}]
 
 
-    console.log(groupavgs);
+    
     console.log(groupedoff);
-    console.log(groupavgs[0].category);
-    console.log(groupedoff[0].y);
+    console.log(groupeddef);
+    console.log(groupavgs);
+    
 
     function groupAvg(group) {
         var groupavgs = [{category: "Offensive Line", total: 34715901},
@@ -166,7 +167,7 @@ function buildChart(sample, type) {
         for (var i = 0; i < group.length; i++) {
             for (var j = 0; j < groupavgs.length; j++) {
                 if (group[i].label === groupavgs[j].category) {
-                    avgbigmemes.push({label: group[i].label, y: ((groupavgs[j].total / group[i].y) * 100)})
+                    avgbigmemes.push({label: group[i].label, y: ((group[i].y /groupavgs[j].total) * 100)})
                 }
             }
         }
@@ -176,6 +177,11 @@ function buildChart(sample, type) {
     groupeddefavg = groupAvg(groupeddef);
     groupedoffavg = groupAvg(groupedoff);
     groupedstavg = groupAvg(groupedst);
+
+    console.log(groupeddefavg);
+    console.log(groupedoffavg);
+    console.log(groupedstavg);
+
 
     if (Charttype === "Category Level") {
         datapointsoff = groupedoffavg;
