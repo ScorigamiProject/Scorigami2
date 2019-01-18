@@ -83,7 +83,9 @@ function buildChart(sample, type) {
     };
 
     function groupBy(data) {
+
         var distinct = [];
+        
         for (var i = 0; i < data.length; i++) {
             // console.log(distinct);
             if (distinct.includes(data[i].category) == true) {
@@ -112,6 +114,8 @@ function buildChart(sample, type) {
         return finalbigmemes;
     }
 
+    
+
     console.log(groupBy(oposcat));
     
     console.log(totalsal); 
@@ -133,11 +137,50 @@ function buildChart(sample, type) {
 
 
     console.log(groupeddef);
-    console.log(Charttype);
+    console.log(groupedoff);
+    console.log(groupedst);
+
+    var groupavgs = [{category: "Offensive Line", total: 34715901},
+    {category: "Secondary", total: 19653283},
+    {category: "Defensive Line", total: 15435859},
+    {category: "Rushing", total: 5575724},
+    {category: "Linebacker", total: 14850430},
+    {category: "Special Teams", total: 3678529},
+    {category: "Passing", total: 48542438}]
+
+
+    console.log(groupavgs);
+    console.log(groupedoff);
+    console.log(groupavgs[0].category);
+    console.log(groupedoff[0].y);
+
+    function groupAvg(group) {
+        var groupavgs = [{category: "Offensive Line", total: 34715901},
+    {category: "Secondary", total: 19653283},
+    {category: "Defensive Line", total: 15435859},
+    {category: "Rushing", total: 5575724},
+    {category: "Linebacker", total: 14850430},
+    {category: "Special Teams", total: 3678529},
+    {category: "Passing", total: 48542438}]
+        avgbigmemes = []
+        for (var i = 0; i < group.length; i++) {
+            for (var j = 0; j < groupavgs.length; j++) {
+                if (group[i].label === groupavgs[j].category) {
+                    avgbigmemes.push({label: group[i].label, y: ((groupavgs[j].total / group[i].y) * 100)})
+                }
+            }
+        }
+        return avgbigmemes
+    }
+
+    groupeddefavg = groupAvg(groupeddef);
+    groupedoffavg = groupAvg(groupedoff);
+    groupedstavg = groupAvg(groupedst);
+
     if (Charttype === "Category Level") {
-        datapointsoff = groupedoff;
-        datapointsdef = groupeddef;
-        datapointsst = groupedst;
+        datapointsoff = groupedoffavg;
+        datapointsdef = groupeddefavg;
+        datapointsst = groupedstavg;
     } else if (Charttype === "Player Level") {
         datapointsoff = playersoff;
         datapointsdef = playersdef;
@@ -197,7 +240,7 @@ function buildChart(sample, type) {
         animationEnabled: true,
         theme: "light2",
         title: {
-            text: "New VS Returning Visitors"
+            text: "NFL Team Salary Breakdown"
         },
         subtitles: [{
             text: "Click on Any Segment to Drilldown",
