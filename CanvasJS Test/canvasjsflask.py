@@ -109,9 +109,11 @@ def samples(sample):
 
 @app.route("/divisions")
 def divisions():
-    """Return the homepage."""
     return render_template("divisions.html")
 
+@app.route("/trades")
+def trades():
+    return render_template("index.html")
 
 if __name__ == "__main__":
     app.run(port=8700)

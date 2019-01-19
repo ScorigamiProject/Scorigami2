@@ -150,9 +150,9 @@ function buildChart(sample, type) {
 
 
     
-    console.log(groupedoff);
-    console.log(groupeddef);
-    console.log(groupavgs);
+    // console.log(groupedoff);
+    // console.log(groupeddef);
+    // console.log(groupavgs);
     
 
     function groupAvg(group) {
@@ -178,9 +178,9 @@ function buildChart(sample, type) {
     groupedoffavg = groupAvg(groupedoff);
     groupedstavg = groupAvg(groupedst);
 
-    console.log(groupeddefavg);
-    console.log(groupedoffavg);
-    console.log(groupedstavg);
+    // console.log(groupeddefavg);
+    // console.log(groupedoffavg);
+    // console.log(groupedstavg);
 
 
     if (Charttype === "Category Level") {

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+  <title>Pack layout (with labels)</title>
+</head>
+
+<style>
+circle {
+  fill: rgb(255, 87, 20);
+  opacity: 0.3;
+  stroke: white;
+}
+text {
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  fill: white;
+  font-value: 10px;
+  text-anchor: middle;
+}
+</style>
+
+<body>
+  <svg width="320" height="320">
+    <g></g>
+  </svg>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"></script>
+  <script>
+var data = {
+  "name": "Football",
+  "children": [
+  {
+    "name": "defense",
+ 
+    "children": [
+      {"name": "cb", "value": 1},
+      {"name": "de", "value": 1},
+      {"name": "de", "value": 1},
+      {"name": "fs", "value": 1},
+      {"name": "lb", "value": 1},
+      {"name": "olb", "value": 1},
+      {"name": "s", "value": 1},
+      {"name": "ss", "value": 1},
+      {"name": "ilb", "value": 1}
+    ]
+  },
+  {
+    "name": "offense",
+    "children": [
+      {"name": "c", "value": 3},
+      {"name": "fb", "value": 3},
+      {"name": "g", "value": 3},
+      {"name": "lt", "value": 3},
+      {"name": "rb", "value": 3},
+      {"name": "rt", "value": 3},
+      {"name": "t", "value": 3},
+      {"name": "te", "value": 3},
+      {"name": "wr", "value": 3},
+      {"name": "ob", "value": 3}
+    ]
+  },
+  { 
+    "name": "specialteams",
+    "children": [
+      {"name": "k", "value": 2},
+      {"name": "p", "value": 2},
+      {"name": "ls", "value": 2}
+    ]
+  }
+]}
+
+var packLayout = d3.pack()
+  .size([300, 300]);
+
+var rootNode = d3.hierarchy(data)
+
+rootNode.sum(function(d) {
+  return d.value;
+});
+
+packLayout(rootNode);
+
+var nodes = d3.select('svg g')
+  .selectAll('g')
+  .data(rootNode.descendants())
+  .enter()
+  .append('g')
+  .attr('transform', function(d) {return 'translate(' + [d.x, d.y] + ')'})
+
+nodes
+  .append('circle')
+  .attr('r', function(d) { return d.r; })
+
+nodes
+  .append('text')
+  .attr('dy', 4)
+  .text(function(d) {
+    return d.children === undefined ? d.data.name : '';
+  })
+
+  </script>
+</body>
+</html>
